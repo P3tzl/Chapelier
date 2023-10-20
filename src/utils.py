@@ -31,11 +31,8 @@ def flip_flag(flag,value):
     new_flag = [pg.transform.flip(pg.transform.scale(image,(image.get_width()/image.get_height()*value,value)),flip_x=True,flip_y=False) for image in flag]
     return new_flag 
 
-def import_fonts():
-    font_30 = pg.font.Font(os.path.join(ROOT_PATH,"figures","fonts","04B_30__.TTF"), 30)
-    font_50 = pg.font.Font(os.path.join(ROOT_PATH,"figures","fonts","04B_30__.TTF"), 50)
-    font_70 = pg.font.Font(os.path.join(ROOT_PATH,"figures","fonts","04B_30__.TTF"), 70)
-    return [font_30, font_50, font_70]
+def import_fonts(fontsize:int):
+    return pg.font.Font(os.path.join(ROOT_PATH,"figures","fonts","04B_30__.TTF"), fontsize)
 
 def prepare_flags():
     country_flags = ["flag_be", "flag_fr"]
@@ -57,6 +54,9 @@ def render_text(screen:pg.Surface,font:pg.font.Font,text:str,pos:tuple,color:tup
     text_obj = pg.transform.rotate(font.render(text,True,color),rotation)
     text_rect = text_obj.get_rect(centerx=pos[0],centery=pos[1])
     screen.blit(text_obj,text_rect)
+
+def get_distance():
+    return
 
 class ColorSwapper:
     def __init__(self,colors:list[tuple],r:int,n:int):
@@ -95,6 +95,8 @@ class ColorSwapper:
 class Background:
     def __init__(self,screen:pg.Surface,image:pg.Surface,speed:int):
         self.screen = screen
+        self.width = screen.get_width()
+        self.height = screen.get_height()
         self.image = image
         self.speed = speed
         
@@ -109,7 +111,11 @@ class Background:
 class Boat:
     def __init__(self,screen:pg.Surface,image:pg.Surface,flag:list[pg.Surface],ypos:int):
         self.screen = screen
+        self.width = screen.get_width()
+        self.height = screen.get_height()
         self.image = image
+        self.height_image = image.get_height()
+        self.width_image = image.get_width()
         self.flag = flag
         self.length = len(flag)
         self.ypos = ypos
@@ -119,13 +125,15 @@ class Boat:
         """
         Render the boat
         """
-        self.screen.blit(self.image,(distance,self.screen.get_height()//2-self.image.get_height()//2-self.ypos))
-        self.screen.blit(self.flag[(self.count)%self.length],(self.count-10,self.screen.get_height()//2-self.ypos+13))
+        self.screen.blit(self.image,(distance,self.height//2-self.height_image//2-self.ypos))
+        self.screen.blit(self.flag[(self.count)%self.length],(distance-10,self.height//2-self.ypos+13))
         self.count += 1
 
 class AnimatedFlag:
     def __init__(self,screen:pg.Surface,images:list[pg.Surface],position:tuple[int]):
         self.screen = screen
+        self.width = screen.get_width()
+        self.height = screen.get_height()
         self.images = images
         self.length = len(images)
         self.position = position
@@ -135,13 +143,14 @@ class AnimatedFlag:
         """
         Render flag
         """
-        self.screen.blit(self.images[(self.count)%self.length],(self.screen.get_width()//2+self.position[0],self.screen.get_height()//2-self.position[1]))
+        self.screen.blit(self.images[(self.count)%self.length],(self.width//2+self.position[0],self.height//2-self.position[1]))
         self.count += 1
-
 
 class Countdown:
     def __init__(self,screen:pg.Surface,start:float,duration:int,font:pg.font.Font,color:tuple=(255,255,255)):
         self.screen = screen
+        self.width = screen.get_width()
+        self.height = screen.get_height()
         self.start = start
         self.duration = duration
         self.color = color
@@ -154,19 +163,23 @@ class Countdown:
         time_left = self.duration*60-round(time.time()-self.start)
         render_text(self.screen,self.font,
                     (time_left<60*10)*"0"+str(time_left//60)+":"+(time_left%60<10)*"0"+str(time_left%60),
-                    (self.screen.get_width()//2,100),self.color)
+                    (self.width//2,100),self.color)
 
 class DistanceMarkers:
-    def __init__(self,screen:pg.Surface,font:pg.font.Font,interval:int,ypos:int,color:tuple=(255,255,255)):
+    #! Not functional. Scaling is wrong. Will not finish.
+    def __init__(self,screen:pg.Surface,font:pg.font.Font,interval:int,speed:int,ypos:int,color:tuple=(255,255,255)):
         """
         Args:
             interval (int): Interval between each marker (m)
             ypos (int): Vertical position on the screen, with the center as reference
         """
         self.screen = screen
+        self.width = screen.get_width()
+        self.height = screen.get_height()
         self.font = font
         self.color = color
         self.interval = interval
+        self.speed = speed
         self.ypos = ypos
     
     def blit(self,distance:int):
@@ -177,12 +190,11 @@ class DistanceMarkers:
             render_text(self.screen,
                         self.font,
                         str(i*self.interval/1e3)+"km",
-                        (i*self.interval*5-distance*4,self.screen.get_height()//2-self.ypos),
+                        (i*self.interval*5-distance*self.speed,self.height//2-self.ypos),
                         color=self.color,
                         rotation=-90)
             render_text(self.screen,
                         self.font,"_____",
-                        (i*self.interval*5-distance*4+40,self.screen.get_height()//2-self.ypos),
+                        (i*self.interval*5-distance*self.speed+40,self.height//2-self.ypos),
                         color=self.color,
                         rotation=-90)
-            
