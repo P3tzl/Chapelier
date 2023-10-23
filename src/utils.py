@@ -1,6 +1,7 @@
 import os 
 import pygame as pg 
 import time
+from pyrow import pyrow as pr
 
 ROOT_PATH = os.path.abspath(os.path.join(os.path.dirname( __file__ )))
 
@@ -60,7 +61,7 @@ def get_distance():
 
 def get_data_streams():
     devices = list(pr.find())
-    print(f"Found {len(devices)} erg(s)") #Debugging statement
+    print(f"Found {devices} erg(s)") #Debugging statement
     ergs = [pr.PyErg(device) for device in devices]
     return ergs
 
@@ -71,7 +72,7 @@ def calibrate_ergs(ergs):
             data1 = erg.get_monitor()['distance']
             if data1 > 0:
                 belgian_erg = erg
-                french_erg = [erg for erg in ergs if erg != french_erg][0]
+                french_erg = [erg for erg in ergs if erg != belgian_erg][0]
                 print("Boats are calibrated")
                 return [belgian_erg, french_erg]
 
