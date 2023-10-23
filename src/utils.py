@@ -58,6 +58,23 @@ def render_text(screen:pg.Surface,font:pg.font.Font,text:str,pos:tuple,color:tup
 def get_distance():
     return
 
+def get_data_streams():
+    devices = list(pr.find())
+    print(f"Found {len(devices)} erg(s)") #Debugging statement
+    ergs = [pr.PyErg(device) for device in devices]
+    return ergs
+
+def calibrate_ergs(ergs):
+    print("Row the Belgian boat")
+    while True:
+        for erg in ergs:
+            data1 = erg.get_monitor()['distance']
+            if data1 > 0:
+                belgian_erg = erg
+                french_erg = [erg for erg in ergs if erg != french_erg][0]
+                print("Boats are calibrated")
+                return [belgian_erg, french_erg]
+
 class ColorSwapper:
     def __init__(self,colors:list[tuple],r:int,n:int):
         """
