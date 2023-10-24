@@ -1,7 +1,7 @@
 import os 
 import pygame as pg 
 import time
-from pyrow import pyrow as pr 
+import pyrow.pyrow as pr 
 
 ROOT_PATH = os.path.abspath(os.path.join(os.path.dirname( __file__ )))
 
