@@ -143,7 +143,7 @@ class Menu:
         self.screen.blit(s,(0,0))
         self.boat_rma.blit(0)
         self.boat_x.blit(0)
-        render_text(self.screen,self.font_10,"Bouzin Philippot Prakopetz Vancanneyt (174 POL)",(200,10))
+        render_text(self.screen,self.font_10,"Bouzin Prakopetz Vancanneyt (174 POL)",(200,10))
         button(self.screen,"Main Menu",self.font_70,(self.width//2,self.height//2-200),(700,100))
         
         while True:
@@ -181,7 +181,7 @@ class Menu:
             self.screen.blit(s,(0,0))
             self.boat_rma.blit(0)
             self.boat_x.blit(0)
-            render_text(self.screen,self.font_10,"Bouzin Philippot Prakopetz Vancanneyt (174 POL)",(200,10))
+            render_text(self.screen,self.font_10,"Bouzin Prakopetz Vancanneyt (174 POL)",(200,10))
             button(self.screen,"Play Menu",self.font_70,(self.width//2,self.height//2-200),(700,100))
             button(self.screen,"Time: "+user_input+" min",self.font_50,(self.width//2,self.height//2-50),(700,75))
             play_button = button(self.screen,"Connect",self.font_50,(self.width//2+180,self.height//2+50),(340,75),play_color)
@@ -217,6 +217,7 @@ class Menu:
 
     def connect(self):
         quit_color = WHITE
+        start_color = WHITE
         self.background.blit(0)
         s = pg.Surface((self.width,self.height))
         s.set_alpha(200)
@@ -224,7 +225,7 @@ class Menu:
         self.screen.blit(s,(0,0))
         self.boat_rma.blit(0)
         self.boat_x.blit(0)
-        render_text(self.screen,self.font_10,"Bouzin Philippot Prakopetz Vancanneyt (174 POL)",(200,10))
+        render_text(self.screen,self.font_10,"Bouzin Prakopetz Vancanneyt (174 POL)",(200,10))
         button(self.screen,"Main Menu",self.font_70,(self.width//2,self.height//2-200),(700,100))
         render_text(self.screen,self.font_50,"CONNECT MACHINES",(self.width//2,self.height//2),RED)
 
@@ -252,11 +253,12 @@ class Menu:
         self.screen.blit(s,(0,0))
         self.boat_rma.blit(0)
         self.boat_x.blit(0)
-        render_text(self.screen,self.font_10,"Bouzin Philippot Prakopetz Vancanneyt (174 POL)",(200,10))
+        render_text(self.screen,self.font_10,"Bouzin Prakopetz Vancanneyt (174 POL)",(200,10))
         button(self.screen,"Main Menu",self.font_70,(self.width//2,self.height//2-200),(700,100))
 
         while True:
-            quit_button = button(self.screen,"Quit",self.font_50,(self.width//2,self.height//2-50),(300,75),quit_color)        
+            quit_button = button(self.screen,"Quit",self.font_50,(self.width//2+180,self.height//2-50),(300,75),quit_color)
+            start_button = button(self.screen,"Start",self.font_50,(self.width//2-180,self.height//2-50),(300,75),start_color)
             machine_buttons = [button(self.screen,machine.get_erg()["serial"],self.font_30,(self.width//2+(-1)**((i+1)%2)*180,self.height*2//3+(i//2-1)*100),(340,75),machine_colors[i]) for i, machine in enumerate(available_machines)]
 
             if assigned_machines.index(None) >= len((available_machines))//2:
@@ -288,7 +290,25 @@ class Menu:
                     quit_color = WHITE
 
                 if None not in assigned_machines:
-                    return assigned_machines
+                    if start_button.collidepoint(mx,my):
+                        start_color = GREEN
+                        if event.type == pg.MOUSEBUTTONDOWN:
+                            start = time.time()
+                            while time.time() - start < 5:
+                                self.background.blit(0)
+                                s = pg.Surface((self.width,self.height))
+                                s.set_alpha(200)
+                                s.fill((0,0,0))
+                                self.screen.blit(s,(0,0))
+                                self.boat_rma.blit(0)
+                                self.boat_x.blit(0)
+                                render_text(self.screen,self.font_10,"Bouzin Prakopetz Vancanneyt (174 POL)",(200,10))
+                                render_text(self.screen,self.font_90,str(round(5-time.time()-start)),(self.width//2,self.height//2-200))
+                                pg.display.flip()
+                                self.clock.tick(self.fps)
+                            return assigned_machines
+                    else:
+                        start_color = WHITE
 
             pg.display.flip()
             self.clock.tick(self.fps)
@@ -394,7 +414,7 @@ class Menu:
             render_text(self.screen,self.font_30,"VS",(self.width//2,self.height//2))
             render_text(self.screen,self.font_50,str(round(distance_rma)) + "m",(self.width//2+400,self.height//2),color=color_rma)
             render_text(self.screen,self.font_50,str(round(distance_x)) + "m",(self.width//2-400,self.height//2),color=color_x)
-            render_text(self.screen,self.font_10,"Bouzin Philippot Prakopetz Vancanneyt (174 POL)",(200,10))
+            render_text(self.screen,self.font_10,"Bouzin Prakopetz Vancanneyt (174 POL)",(200,10))
 
             # Options button
             options_button = button(self.screen,"Options",self.font_30,(self.width-150,50),(250,50),options_color)
