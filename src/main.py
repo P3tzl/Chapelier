@@ -44,7 +44,7 @@ flag_rma = ut.AnimatedFlag(screen,flag_rma,(-100-flag_rma[0].get_width(),flag_rm
 flag_x = ut.AnimatedFlag(screen,flag_x,(100,flag_x[0].get_height()//2))
 
 # Distance to screen x location
-location = lambda x: 1 - 1/(x/1000 + 1)
+location = lambda x: 1 - 1/(x/200 + 1)
 
 def button(text:str,font:pg.font.Font,pos:tuple[int],size:tuple[int],color:tuple=WHITE):
     ut.render_text(screen,font,text,(pos[0],pos[1]),color)
@@ -295,6 +295,7 @@ def end_menu(scores:list):
     ut.render_text(screen,font_90,"Winner!",(width//2,height//2-375))
     ut.render_text(screen,font_50,"1st "+str(round(scores[0][0]))+" m",(width//2,height//2),GOLD)
     ut.render_text(screen,font_30,"2nd "+str(round(scores[1][0]))+" m",(width//2,height//2+75),SILVER)
+    old_ypos = scores[0][1].ypos
     while True:
         scores[0][1].ypos = 200
         scores[0][1].blit(width//2-scores[0][1].width_image//2)
@@ -304,6 +305,7 @@ def end_menu(scores:list):
             if continue_button.collidepoint(mx,my):
                 continue_color = RED
                 if event.type == pg.MOUSEBUTTONDOWN:
+                    scores[0][1].ypos = old_ypos
                     return
             else:
                 continue_color = WHITE
@@ -317,8 +319,8 @@ def main():
             return_play = play_menu()
             if type(return_play) == int:
                 return_connect = connect_menu()
-                if return_connect == tuple[pr.PyErg]:
-                    return_game = game(return_play[0],return_play[1],return_connect)
+                if type(return_connect) == list:
+                    return_game = game(return_play,return_connect)
                     if return_game == "quit":
                         continue
                     else:
