@@ -28,7 +28,7 @@ def main():
     # Screen parameters
     clock = pg.time.Clock()
     fps = 30
-    screen = pg.display.set_mode((1600,900),pg.FULLSCREEN|pg.SCALED|pg.NOFRAME)
+    screen = pg.display.set_mode((1600,900),pg.SCALED)
     pg.display.set_caption("Chapelié")
     pg.display.set_icon(boat)
 
