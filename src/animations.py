@@ -255,18 +255,17 @@ class Menu:
         self.boat_x.blit(0)
         render_text(self.screen,self.font_10,"Bouzin Prakopetz Vancanneyt (174 POL)",(200,10))
         button(self.screen,"Main Menu",self.font_70,(self.width//2,self.height//2-200),(700,100))
+        current_color = RED
 
         while True:
             quit_button = button(self.screen,"Quit",self.font_50,(self.width//2+180,self.height//2-50),(300,75),quit_color)
             start_button = button(self.screen,"Start",self.font_50,(self.width//2-180,self.height//2-50),(300,75),start_color)
             machine_buttons = [button(self.screen,machine.get_erg()["serial"],self.font_30,(self.width//2+(-1)**((i+1)%2)*180,self.height*2//3+(i//2-1)*100),(340,75),machine_colors[i]) for i, machine in enumerate(available_machines)]
-            try:
+            if None in assigned_machines:
                 if assigned_machines.index(None) >= len((available_machines))//2:
                     current_color = BLUE
                 else:
-                    current_color = RED 
-            except:
-                curent_color = RED 
+                    current_color = RED
 
             mx,my = pg.mouse.get_pos()
             for event in pg.event.get():
